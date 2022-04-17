@@ -14,4 +14,3 @@ int main(int argc, char **argv)
     rm(argv[1]);
     return 0;
 }
-

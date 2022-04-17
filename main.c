@@ -9,6 +9,22 @@
 #include "cd.c"
 
 #define MAXINPLEN 1000
+#define MAXLIST 100
+
+
+void parseSpace(char* str, char** parsed)
+{
+	int i;
+
+	for (i = 0; i < MAXLIST; i++) {
+		parsed[i] = strsep(&str, " ");
+
+		if (parsed[i] == NULL)
+			break;
+		if (strlen(parsed[i]) == 0)
+			i--;
+	}
+}
 
 //COMPILE WITH GCC -Wall -o main main.c -lreadline
 
@@ -62,7 +78,6 @@ int main(){
         if (!strcmp(commandInput, "ls")) system("ls");
         else if(!strcmp(commandInput, "clear")) system("clear");
         else if (!strcmp(commandInput, "exit")) break;
-    }
-    free(commandInput);
+    }    free(commandInput);
     return 0;
   }

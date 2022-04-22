@@ -167,6 +167,7 @@ int main(int argc, char* argv[]){
       }
   }*/
 
+  /*
   //redirecting standard output (into another file)
   int file = open("pingResults.txt", O_WRONLY | O_CREAT, 0777); //write only + create if it doesn't  with "bitwise or"; 0777 everyone has access to the file
   // file descriptors are numbers that are unique accross a process
@@ -187,3 +188,4 @@ int main(int argc, char* argv[]){
   // Also, this fd 1 for STDOUT should be replaced with STDOUT_FILENO for good practice, since that's the standard
   // Even though fd 3 was duplicated, we can close it without any consequences by using close(file)
   // the "int file3 = " part in dup2() can be removed since we already know that we are opening a new fd that goes to STDOUT
+  */

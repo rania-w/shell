@@ -36,7 +36,7 @@ void forkbombExample(){
     printf("[Y/n]\n");
     scanf("%c", &input);
     //int i = 0;
-    
+
     if(input == 'y'|| input == 'Y'){
         printf("oof\n");
         //a random large number was used so that the forkbomb would eventually stop because we cherish our laptops
@@ -57,18 +57,18 @@ void waitExample(){
         wait(NULL);
         printf("CT: child has terminated\n");
     }
- 
+
     printf("Bye\n");
 }
 
 void execvExample(){
     char *binaryPath = "/bin/ls";
-    char *args[] = {binaryPath, "-lh", "/home", NULL};
- 
+    char *args[] = {binaryPath, "-a", "/home/dzenisk/Desktop/ProjectGitSSH/shell/main", NULL};
     execv(binaryPath, args);
 }
 int main(int argc, char **argv)
 {
-    forkwKillExample();
+    //forkwKillExample();
+    execvExample();
     return 0;
 }

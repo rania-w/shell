@@ -77,6 +77,7 @@ int main(){
         if(strlen(commandInput)>0) add_history(commandInput);
         if (!strcmp(commandInput, "ls")) system("ls");
         else if(!strcmp(commandInput, "clear")) system("clear");
+				else if(!strcmp(commandInput, "cat")) system("cat");
         else if (!strcmp(commandInput, "exit")) break;
     }    free(commandInput);
     return 0;

@@ -1,5 +1,11 @@
 #include <stdio.h>
 
+/**
+ * rm can take multiple files and remove them
+ * it is implemented by simply using the remove function
+ * 
+ */
+
 void rm(char* file){
     if (remove(file) == 0) {
         printf("The file %s is deleted successfully.\n", file);

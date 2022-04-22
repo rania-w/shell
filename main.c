@@ -26,7 +26,7 @@ void parseSpace(char* str, char** parsed)
 	}
 }
 
-//COMPILE WITH GCC -Wall -o main main.c -lreadline
+//COMPILE WITH gcc -Wall -o main main.c -lreadline
 
 char* printDir(){
   char* dir = malloc(512);

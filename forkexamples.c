@@ -2,7 +2,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
+/**
+ *  
+ * a simple program showing the implementation of fork() and wait() system calls
+ * where wait() is used to terminate the child process
+ * 
+ */
 void forkExample(){
     printf("henlo\n");
     int x = fork();
@@ -16,14 +21,18 @@ void forkExample(){
         printf("child has terminated\n");
     }
 }
+/**
+ * 
+ * implementation of forkbomb with warnings for the user
+ * 
+ */
 void forkbombExample(){
     char input;
-    printf("pls don't do this\n");
+    printf("are you sure you want to do this? \n");
     printf("[Y/n]\n");
     scanf("%c", &input);
     
     if(input == 'y'|| input == 'Y'){
-        printf("oof\n");
         while(1){
             fork();
         }
@@ -31,7 +40,11 @@ void forkbombExample(){
         printf("you made the right choice\n");
     } else printf("error. pls select [Y/n]\n");
 }
-
+/**
+ * 
+ * an example showing the child process being terminated with kill() as opposed to the example with wait()
+ * 
+ */
 void killExample(){
     int x = fork();
     if(x>0){

@@ -9,6 +9,8 @@
 #include <errno.h>
 #include <fcntl.h> // we can call open() with this
 #include <time.h>
+#include <signal.h>
+
 /*
 int main(int argc, char* argv[])
 {
@@ -121,6 +123,7 @@ int main(int argc, char* argv[]){
 
 */
 
+/*
 int main(int argc, char* argv[]){
     // all exec functions
     // exec l -> l = list of arguments
@@ -146,7 +149,7 @@ int main(int argc, char* argv[]){
     return 0;
 
 }
-
+*/
 // step 1: fork
 // step 2: in child, call execlp
 // step 3: in paren, wait for child to finish, then do something else
@@ -189,3 +192,145 @@ int main(int argc, char* argv[]){
   // Even though fd 3 was duplicated, we can close it without any consequences by using close(file)
   // the "int file3 = " part in dup2() can be removed since we already know that we are opening a new fd that goes to STDOUT
   */
+
+
+  /*
+  //signals:
+  //kill(pid, SIGSTOP); //pauses / stops the process (ctrl+z ili ctrl+y in the terminal) -> send the process to the background
+  //kill(pid, SIGCONT); //continues the process (fg without parameters in the terminal)
+  //kill(pid, SIGTERM); //close process
+  //kill(pid, SIGKILL); //force-close process
+  //SIGSTP, similar to SIGSTOP (The SIGSTOP signal stops the process. It cannot be handled, ignored, or blocked.
+  //The SIGTSTP signal is an interactive stop signal. Unlike SIGSTOP , this signal can be handled and ignored.)
+  */
+
+  /*
+  //handling signals
+  void handle_sigtstp(int sig){
+    printf("Stop not allowed\n");
+    fflush(stdout);
+  }
+
+  void handle_sigcont(int sig){ //fg command; but even though we set the handler and told it what to do, it will do that and continue normally with the process where it stopped
+    printf("Input number: \n");
+  }
+
+  int main(int argc, char* argv[]){
+    struct sigaction sa;  //predefined struct (probably from signal.h)
+    sa.sa_handler = &handle_sigcont; //pointer to function
+    sa.sa_flags = SA_RESTART; //this fixes issues if we're using scanf and sending SIGTSTP at the same time
+    sigaction(SIGCONT, &sa, NULL); //binds the signal to the handler, the 3rd param could be an old sigaction handler (optional)
+
+    //signal(SIGTSTP, &handle_sigtstp); // this does exactly the same thing as the above part, but it's an unsafe function for portability reasons (AVOID ITS USE)
+
+    int x;
+    printf("Input number: \n");
+    scanf("%d", &x);
+    return 0;
+  }
+  */
+
+/*
+  // custom signals
+  // default behaviour for all signals is to kill the process
+
+  int x=0; //global because signals can't be used to send data between processes
+  void handle_sigusr1(int sig){
+    if (x == 0){
+      printf("\n(HINT) 14+1 :)\n");
+    }
+  }
+
+  int main(int argc, char* argv[]){
+    int pid = fork();
+    if(pid == -1){
+      return 1;
+    }
+    if(pid == 0){
+      // Child process
+      sleep(5);
+      kill(getppid(), SIGUSR1); // gettppid() gets the parent's pid, SIGUSR1 is the custom signal that we will send to the parent
+    } else {
+      // Parent process
+      struct sigaction sa = {0};
+      sa.sa_flags = SA_RESTART; //restarts scanf once it finishes its execution
+      sa.sa_handler = &handle_sigusr1;
+      sigaction(SIGUSR1, &sa, NULL);
+
+
+
+      printf("What is the result of 3 x 5: ");
+      scanf("%d", &x);
+      if(x==15){
+        printf("Correct\n");
+      }
+      else{
+        printf("Incorrect\n");
+      }
+      wait(NULL);
+    }
+
+    return 0;
+  }
+*/
+
+// when sending arrays through a pipe, we should also send the array size through the pipe
+
+
+// sending a string through a pipe
+
+int main(int argc, char* argv[]){
+  int fd[2];
+  if(pipe(fd) == -1){
+    return 1;
+  }
+  int pid = fork();
+  if(pid < 0){
+    return 2;
+  }
+  if(pid == 0){
+    //child
+    close(fd[0]); // close read side of the pipe
+    char str[200];
+    printf("Input string: ");
+    fgets(str, 200, stdin); //takes the string, the max number of chars it can read and the source where it's reading from
+    str[strlen(str) -1] = '\0'; //remove "\n" and replace it with null
+
+    int length = strlen(str) + 1;
+
+    if(write(fd[1], &length, sizeof(length)) < 0){
+      return 3;
+    }
+    if (write(fd[1], str, sizeof(char) * length)<0) // +1 for the null terminator
+    {
+      return 4;
+    }
+    close(fd[1]);
+  }
+  else {
+    //Parent
+    close(fd[1]);
+    char str[200];
+    int length;
+    if (read(fd[0], &length, sizeof(int)) < 0){
+      return 5;
+    }
+    if (read(fd[0], str, sizeof(char) * length) < 0){ // this will read the null term as well
+      return 6;
+    }
+    printf("Received: %s\n", str);
+    close(fd[0]);
+    wait(NULL);
+  }
+
+  return 0;
+}
+
+
+//Simulating the pipe "|" operator
+/*
+int main(int argc, char* argv[]){
+
+  return 0;
+}
+*/

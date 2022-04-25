@@ -394,6 +394,7 @@ int main(int argc, char* argv[]){
   }
   if (pid1 == 0){
     //Child process 1
+    //the process of closing all these pipes can be generalized (especially useful for a program where we don't know how many forks will happen)
     close(fd[0][1]);
     close(fd[1][0]);
     close(fd[2][0]);

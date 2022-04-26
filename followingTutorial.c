@@ -372,7 +372,7 @@ int main(int argc, char* argv[]){
 }*/
 
 //working with multiple pipes
-
+/*
 int main(int argc, char* argv[]){
   int fd[3][2]; // all of these file descriptors will be duplicated when we fork. So, if there are 6 now, after 2 forks, there will be 16 of them
   // fd[0][0] child 1 reads parent-child1 pipe
@@ -458,4 +458,4 @@ int main(int argc, char* argv[]){
 
 
   return 0;
-}
+}*/

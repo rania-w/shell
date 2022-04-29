@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
 /**
  *  
  * a simple program showing the implementation of fork() and wait() system calls
@@ -59,6 +60,22 @@ void killExample(){
 
 int main(int argc, char **argv)
 {
-    killExample();
+    if(argc != 2) printf("Invalid number of arguments passed");
+    else if(strcmp(argv[1], "fork") == 0){
+        //printf("%s", argv[1]);
+        printf("\n\ncalling forkExample!!!!\n\n");
+        forkExample();
+    }
+    else if(strcmp(argv[1], "bomb") == 0){
+        //printf("%s", argv[1]);
+        printf("\n\ncalling forkbombExample!!!!\n\n");
+        forkbombExample();
+    }
+    else if(strcmp(argv[1], "kill") == 0){
+        //printf("%s", argv[1]);
+        printf("\n\ncalling killExample!!!!\n\n");
+        killExample();
+    }
+    else printf("\n\bNot a valid option\n\n");
     return 0;
 }

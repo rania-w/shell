@@ -6,7 +6,6 @@
 #include<readline/history.h>
 #include<limits.h>
 #include<libgen.h>
-//#include "cd.c"
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
@@ -23,18 +22,20 @@ static char* args[512];
 char *cmd_exec[100];
 int flag;
 pid_t pid;
-int pid, status;
+int status;
 char* output_redirection_file;
 int output_redirection = 0;
+int output_redirection_concat = 0;
 
 void clear_variables()
 {
-  fd =0;
-  flag=0;
-  pipe_count=0;
-  pid=0;
-  output_redirection_file = NULL;
-  output_redirection = 0;
+    fd =0;
+    flag=0;
+    pipe_count=0;
+    pid=0;
+    free(output_redirection_file);
+    output_redirection = 0;
+    output_redirection_concat = 0;
 }
 
 void print_help(){
@@ -45,101 +46,33 @@ void print_help(){
 //COMPILE WITH gcc -Wall -o main main.c -lreadline
 
 char* printDir(){
-  char* dir = malloc(512);
-  getcwd(dir, sizeof(dir));
-  //printf("%s", dir);
-  return dir;
-  //printf("%s",dirname(dir));
-  //printf("%s",basename(dir));
+    char* dir = (char*) malloc(512);
+    getcwd(dir, sizeof(dir));
+    //printf("%s", dir);
+    return dir;
+    //printf("%s",dirname(dir));
+    //printf("%s",basename(dir));
 }
 char* printMachineAndUser(){
     char* userName = getenv("USER");
     char machineName[HOST_NAME_MAX + 1];
-    char* returnValue = malloc(1024);
+    char* returnValue = (char*) malloc(1024);
+    *returnValue = 0;
     gethostname(machineName, HOST_NAME_MAX + 1);
     char dir[1024];
     getcwd(dir, sizeof(dir));
-    //printf("%s", dir);
-    //printf("\033[37m\033[41m"); // White foreground / Red background
-    //printf("\035[0;31mhello, world\033[0m\n"); // prints "hello, world" in red
-
-    //printf("\033[0;32m%s@%s:\033[0;34m~", machineName, userName);
-    //printDir();
-    //printf("\033[0m$ ");
-    //char* dir = printDir();
     strcat(returnValue, "\033[0;32m");
     strcat(returnValue, machineName);
     strcat(returnValue, "@");
     strcat(returnValue, userName);
     strcat(returnValue, ":\033[0;34m~");
-    //printf("%s", dir);
     strcat(returnValue, dir);
     strcat(returnValue, "\033[0m$ ");
-    //printf("%s", returnValue);
 
     return returnValue;
 }
 
-/*
-char** arrIntoArrArr(char* arr){
-	int counter;
-	counter = 0;
-
-	char *tempString, *cpPassedString;
-	cpPassedString = malloc(100);
-	strcpy(cpPassedString,arr);
-
-	tempString = strtok(cpPassedString," \n");
-	char **tempArray = malloc(100);
-
-	while(tempString != NULL){
-			tempArray[counter] = malloc(100);
-			tempArray[counter] = strdup(tempString);
-			tempString = strtok(NULL, " \n");
-			++counter;
-	}
-	//tempArray[counter] = NULL;
-
-	free(cpPassedString);
-	return tempArray;
-}*/
-
-/*
-void execute_command(char* command) {
-    int i = 0;
-    int argument_count = 0;
-
-    while (command[i] == ' ') {
-        i++;
-    }
-    command = command + i;
-
-    i = 0;
-
-    while (command[i] != '\0') {
-         if (command[i] == ' ')
-             argument_count++;
-         i++;
-     }
-
-    char** argv = calloc(argument_count + 2, sizeof(char*));
-    char* argument = NULL;
-    i = 0;
-    while ((argument = strsep(&command, " ")) != NULL) {
-       if (strlen(argument) != 0) {
-           argv[i] = calloc(strlen(argument) + 1, sizeof(char));
-           strncpy(argv[i], argument, strlen(argument));
-       }
-       i++;
-    }
-    argv[i] = NULL;
-
-    if (execvp(argv[0], argv) != 0) {
-        fprintf(stderr, "Error creating pipe. %s",         strerror(errno));
-    }
-}*/
-
-void tokenise_commands(char *com_exec) //pretvori prvu komandu u array
+void splitCommandOnSpace(char *com_exec) //pretvori prvu komandu u array
 {
   int m=1;
   args[0]=strtok(com_exec," ");
@@ -151,32 +84,48 @@ char* skipSpace(char* character)
   while (isspace(*character)) ++character;
   return character;
 }
-void tokenise_redirect_output(char *cmd_exec)
+void output_redirect_newFile(char* oneCommand)
 {
-  char *o_token[100];
-  char *new_cmd_exec1;
-  new_cmd_exec1=strdup(cmd_exec);
+  char *o_token[100]; // all parts before >
+  char *copiedCommand;
+  copiedCommand=strdup(oneCommand);
   int m=1;
-  o_token[0]=strtok(new_cmd_exec1,">"); //splita komandu citavu na 2 dijela, token[0] je komanda, token[1] je output file
+  o_token[0]=strtok(copiedCommand,">"); //splita komandu citavu na 2 dijela, token[0] je komanda, token[1] je output file
   while((o_token[m]=strtok(NULL,">"))!=NULL) m++;
   o_token[1]=skipSpace(o_token[1]); // > *space* naziv_fajla (izbaci space)
   output_redirection_file=strdup(o_token[1]);
-  tokenise_commands(o_token[0]);
+  free(copiedCommand);
+  free(oneCommand);
+  splitCommandOnSpace(o_token[0]);
+}
+
+void output_redirect_concat(char* oneCommand){
+  char *o_token[100]; // all parts before >
+  char *copiedCommand;
+  copiedCommand=strdup(oneCommand);
+  int m=1;
+  o_token[0]=strtok(copiedCommand,">>"); //splita komandu citavu na 2 dijela, token[0] je komanda, token[1] je output file
+  while((o_token[m]=strtok(NULL,">>"))!=NULL) m++;
+  o_token[1]=skipSpace(o_token[1]); // > *space* naziv_fajla (izbaci space)
+  output_redirection_file=strdup(o_token[1]);
+  free(copiedCommand);
+  free(oneCommand);
+  splitCommandOnSpace(o_token[0]);
 }
 
 static int command(int input, int first, int last, char* stringForCheckingRedirect)
 {
   int mypipefd[2], output_fd;
   if(pipe(mypipefd)){
-		perror("pipe failed");
-		return 1;
-	}
+      perror("pipe failed");
+      return 1;
+  }
   pid = fork();
 
-	if (pid < 0) {
-		perror("fork failed");
-		return 2;
-	}
+  if (pid < 0) {
+      perror("fork failed");
+      return 2;
+  }
   if (pid == 0)
   {
     if (first==1 && last==0 && input==0)
@@ -193,72 +142,94 @@ static int command(int input, int first, int last, char* stringForCheckingRedire
       dup2(input, 0);
     }
 
+    if (strstr(stringForCheckingRedirect, ">>")){ //is ">>" is a substring of stringForCheckingRedirect...
+        output_redirection_concat = 1;
+        output_redirect_concat(stringForCheckingRedirect);
+    }
     if (strchr(stringForCheckingRedirect, '>'))
-        {
-          output_redirection=1;
-          tokenise_redirect_output(stringForCheckingRedirect);
-        }
-    if(output_redirection == 1)
-        {
-          output_fd = open(output_redirection_file, O_WRONLY|O_CREAT|O_TRUNC, 0644); //https://stackoverflow.com/questions/18415904/what-does-mode-t-0644-mean
-          //creat(output_redirection_file, 0644);
-          //make a redirection for appending (O_TRUNC probably problem)
-          if (output_fd < 0)
-              {
+    {
+        output_redirection=1;
+        output_redirect_newFile(stringForCheckingRedirect);
+    }
+    if(output_redirection_concat == 1)
+    {
+        output_fd = open(output_redirection_file, O_WRONLY|O_APPEND, 0644);
+        //https://stackoverflow.com/questions/18415904/what-does-mode-t-0644-mean
+        //creat(output_redirection_file, 0644);
+        //make a redirection for appending (O_TRUNC probably problem)
+        if (output_fd < 0)
+            {
                 fprintf(stderr, "Failed to open %s for writing\n", output_redirection_file);
+                free(output_redirection_file);
                 return(EXIT_FAILURE);
-              }
-            dup2(output_fd, 1);
-            close(output_fd);
-            output_redirection=0;
-        }
+            }
+        dup2(output_fd, 1);
+        close(output_fd);
+        output_redirection=0;
+    }
+    else if(output_redirection == 1)
+    {
+        output_fd = open(output_redirection_file, O_WRONLY|O_CREAT|O_TRUNC, 0644);
+        //https://stackoverflow.com/questions/18415904/what-does-mode-t-0644-mean
+        //creat(output_redirection_file, 0644);
+        //make a redirection for appending (O_TRUNC probably problem)
+        if (output_fd < 0)
+            {
+                fprintf(stderr, "Failed to open %s for writing\n", output_redirection_file);
+                free(output_redirection_file);
+                return(EXIT_FAILURE);
+            }
+        dup2(output_fd, 1);
+        close(output_fd);
+        output_redirection=0;
+    }
     if(execvp(args[0], args)<0) {printf("%s: command not found\n", args[0]);}
-		exit(0);
+    exit(0);
+    //end of child process
   }
   else
   {
      waitpid(pid, 0, 0);
-   }
+  }
 
-  if (last == 1)
-    close(mypipefd[0]);
-  if (input != 0)
-    close(input);
+  if (last == 1) close(mypipefd[0]);
+  if (input != 0) close(input);
   close(mypipefd[1]);
+  free(stringForCheckingRedirect); //freeing strdup() malloced space
+  free(output_redirection_file); //since it's causing memory leaks (and it's annoying)
   return mypipefd[0];
-
 }
 
 void cd(){
-		char *home_dir="/home";
+    char *home_dir="/home";
 
 	// Go to home dir
-		if((args[1]==NULL)||(strcmp(args[1],"~")==0)||(strcmp(args[1],"--")==0))
-			chdir(home_dir);
+    if((args[1]==NULL)||(strcmp(args[1],"~")==0)||(strcmp(args[1],"--")==0)) chdir(home_dir);
 
 	// Go to passed dir
-		else {
-			if(chdir(args[1])<0){perror("Error: ");}
+    else {
+          if(chdir(args[1])<0){perror("Error: ");}
 	}
 }
 
 static int split(char *cmd_exec, int input, int first, int last)
 {
-        int m=1;
-        char* stringForCheckingRedirect = strdup(cmd_exec);
-        args[0]=strtok(cmd_exec," ");
-        while((args[m]=strtok(NULL," "))!=NULL)
-              m++;
-        args[m]=NULL;
-        if (args[0] != NULL)
-            {
-						if(strcmp("cd",args[0])==0)
-                    {
-                    cd();
-                    return 1;
-                    }
-            }
-    return command(input, first, last, stringForCheckingRedirect);
+    int m=1;
+    char* stringForCheckingRedirect = strdup(cmd_exec);
+    args[0]=strtok(cmd_exec," ");
+    while((args[m]=strtok(NULL," "))!=NULL) m++;
+    args[m]=NULL;
+    if (args[0] != NULL)
+    {
+        if(strcmp("cd",args[0])==0)
+        {
+            cd();
+            return 1;
+        }
+    }
+    int fdReturn = command(input, first, last, stringForCheckingRedirect);
+    //free(stringForCheckingRedirect);
+    return fdReturn;
 }
 
 void with_pipe_execute(char* commandInput)
@@ -275,13 +246,11 @@ void with_pipe_execute(char* commandInput)
 	cmd_exec[n]=NULL;
 	pipe_count=n-1;
 	for(i=0; i<n-1; i++)
-	    {
-	      input = split(cmd_exec[i], input, first, 0);
-	      first=0;
-	    }
-	input=split(cmd_exec[i], input, first, 1);
-	input=0;
-	return;
+    {
+      input = split(cmd_exec[i], input, first, 0);
+      first=0;
+    }
+    split(cmd_exec[i], input, first, 1);
 }
 
 
@@ -289,21 +258,24 @@ void with_pipe_execute(char* commandInput)
 int main(){
     char* commandInput;
     while(1){
-				clear_variables();
-				fflush(stdin);
-				fflush(stdout);
-        //printMachineAndUser();
-        //commandInput = readline("");
-        commandInput = readline(printMachineAndUser());
+        clear_variables();
+        fflush(stdin);
+        fflush(stdout);
+        char* machineAndUser = printMachineAndUser();
+        //commandInput = readline(printMachineAndUser());
+        commandInput = readline(machineAndUser);
+        free(machineAndUser);
 
-				//call single-word commands
+        //call single-word commands
         if(strlen(commandInput)>0) add_history(commandInput);
         if (!strcmp(commandInput, "ls")) system("ls");
         else if(!strcmp(commandInput, "clear")) system("clear");
 				//else if(!strcmp(commandInput, "cat")) system("cat");
-        else if (!strcmp(commandInput, "exit")) break;
-				else with_pipe_execute(commandInput);
-			}
-			free(commandInput);
+        else if (!strcmp(commandInput, "exit")){ free(commandInput); break; }
+        else if(strlen(commandInput) == 0) { free(commandInput); continue; } //THIS WILL PREVENT A VERY ANNOYING CRASHING PROBLEM
+        //THAT I WAS TRYING TO FIX FOR AN HOUR
+        else with_pipe_execute(commandInput);
+        free(commandInput);
+    }
     return 0;
   }

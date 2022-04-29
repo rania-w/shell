@@ -10,6 +10,9 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
+#include <sys/stat.h> //open, O_RDONLY,O_CREAT, etc.
+#include<fcntl.h>
+
 
 #define MAXINPLEN 1000
 #define MAXLIST 100
@@ -21,6 +24,8 @@ char *cmd_exec[100];
 int flag;
 pid_t pid;
 int pid, status;
+char* output_redirection_file;
+int output_redirection = 0;
 
 void clear_variables()
 {
@@ -28,6 +33,8 @@ void clear_variables()
   flag=0;
   pipe_count=0;
   pid=0;
+  output_redirection_file = NULL;
+  output_redirection = 0;
 }
 
 void print_help(){
@@ -132,10 +139,34 @@ void execute_command(char* command) {
     }
 }*/
 
-
-static int command(int input, int first, int last)
+void tokenise_commands(char *com_exec) //pretvori prvu komandu u array
 {
-  int mypipefd[2];
+  int m=1;
+  args[0]=strtok(com_exec," ");
+  while((args[m]=strtok(NULL," "))!=NULL) m++;
+}
+
+char* skipSpace(char* character)
+{
+  while (isspace(*character)) ++character;
+  return character;
+}
+void tokenise_redirect_output(char *cmd_exec)
+{
+  char *o_token[100];
+  char *new_cmd_exec1;
+  new_cmd_exec1=strdup(cmd_exec);
+  int m=1;
+  o_token[0]=strtok(new_cmd_exec1,">"); //splita komandu citavu na 2 dijela, token[0] je komanda, token[1] je output file
+  while((o_token[m]=strtok(NULL,">"))!=NULL) m++;
+  o_token[1]=skipSpace(o_token[1]); // > *space* naziv_fajla (izbaci space)
+  output_redirection_file=strdup(o_token[1]);
+  tokenise_commands(o_token[0]);
+}
+
+static int command(int input, int first, int last, char* stringForCheckingRedirect)
+{
+  int mypipefd[2], output_fd;
   if(pipe(mypipefd)){
 		perror("pipe failed");
 		return 1;
@@ -161,6 +192,26 @@ static int command(int input, int first, int last)
     {
       dup2(input, 0);
     }
+
+    if (strchr(stringForCheckingRedirect, '>'))
+        {
+          output_redirection=1;
+          tokenise_redirect_output(stringForCheckingRedirect);
+        }
+    if(output_redirection == 1)
+        {
+          output_fd = open(output_redirection_file, O_WRONLY|O_CREAT|O_TRUNC, 0644); //https://stackoverflow.com/questions/18415904/what-does-mode-t-0644-mean
+          //creat(output_redirection_file, 0644);
+          //make a redirection for appending (O_TRUNC probably problem)
+          if (output_fd < 0)
+              {
+                fprintf(stderr, "Failed to open %s for writing\n", output_redirection_file);
+                return(EXIT_FAILURE);
+              }
+            dup2(output_fd, 1);
+            close(output_fd);
+            output_redirection=0;
+        }
     if(execvp(args[0], args)<0) {printf("%s: command not found\n", args[0]);}
 		exit(0);
   }
@@ -193,8 +244,8 @@ void cd(){
 
 static int split(char *cmd_exec, int input, int first, int last)
 {
-      {
         int m=1;
+        char* stringForCheckingRedirect = strdup(cmd_exec);
         args[0]=strtok(cmd_exec," ");
         while((args[m]=strtok(NULL," "))!=NULL)
               m++;
@@ -207,8 +258,7 @@ static int split(char *cmd_exec, int input, int first, int last)
                     return 1;
                     }
             }
-        }
-    return command(input, first, last);
+    return command(input, first, last, stringForCheckingRedirect);
 }
 
 void with_pipe_execute(char* commandInput)

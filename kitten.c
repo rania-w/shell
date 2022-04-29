@@ -47,10 +47,14 @@
        prev_character = character;
      }
    }
-   /*else if(printingEndline){
-
-   }*/
-
+   else if(printingEndline){
+     while((character = fgetc(filePtr))!=EOF) //gets each character from a file until it reaches or End Of File
+     {
+       if (character == '\n') printf("$");
+       printf("%c", character);
+       prev_character = character;
+     }
+   }
    else{
      while((character = fgetc(filePtr))!=EOF) //gets each character from a file until it reaches or End Of File
      {

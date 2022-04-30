@@ -1,5 +1,7 @@
 Midterminal - shell project
 
+
+
 Dženis Kajević & Rania Weiss
 
 Task 1.5
@@ -15,9 +17,24 @@ There is no rule for how many context switches should occur given any parametrs.
 The biggest challenge for this project was not being as familiar as we were hoping we were with the C programming language. Many of the things we learned during our Programming II course was not quite enough to grasp the complexity and possibilities of the language.
 
 SOURCES:
-https://www.geeksforgeeks.org/making-linux-shell-c/
-https://www.asciiart.eu/mythology/unicorns
-https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/examples/cowsay/cowsay.c
-https://aljensencprogramming.wordpress.com/2014/05/15/the-kill-function-in-c/
-https://www.youtube.com/watch?v=8hVLcyBkSXY
-https://linuxhint.com/using_mmap_function_linux/
+Shell analysis(1): https://www.geeksforgeeks.org/making-linux-shell-c/
+Shell analysis(2): https://github.com/kalpishs/Unix-Shell-Implementation-in-C
+Shell analysis(3): https://github.com/TunsAdrian/Linux-Terminal
+Shell analysis(4): https://web.stonehill.edu/compsci/CS314/Assignments/Assignment2.pdf
+(l)readline: https://eli.thegreenplace.net/2016/basics-of-using-the-readline-library/
+Unicorn ASCII: https://www.asciiart.eu/mythology/unicorns
+Cowsay analysis: https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/examples/cowsay/cowsay.c
+Kill(): https://aljensencprogramming.wordpress.com/2014/05/15/the-kill-function-in-c/
+MMAP(1): https://www.youtube.com/watch?v=8hVLcyBkSXY
+MMAP(2): https://linuxhint.com/using_mmap_function_linux/
+why to avoid gets(): https://blogcwi.wordpress.com/2015/04/27/gets-docx/
+fputs() - puts() replacement: https://www.geeksforgeeks.org/fgets-gets-c-language/
+using valgrind to optimize shell (memory leak problems): https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks
+valgrind analysis: https://web.stanford.edu/class/archive/cs/cs107/cs107.1222/resources/valgrind.html
+Unix Processes in C: https://youtube.com/playlist?list=PLfqABt5AS4FkW5mOn2Tn9ZZLLDwA3kZUY
+Pipes(1): https://medium.com/swlh/understanding-pipes-in-unix-with-a-sample-implementation-9fe110d36412
+strcspn(1): https://stackoverflow.com/questions/2693776/removing-trailing-newline-character-from-fgets-input
+strcspn(2): https://www.tutorialspoint.com/c_standard_library/c_function_strcspn.htm
+open() and creat(): https://man7.org/linux/man-pages/man2/open.2.html
+analysis of multiple cat() implementations: https://gist.github.com/pete/665971
+

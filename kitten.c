@@ -3,7 +3,7 @@
 /**
  * rm can take multiple files and remove them
  * it is implemented by simply using the remove function
- *
+ * hmmmmmmmm
  */
 
  int lineCount = 0;
@@ -64,6 +64,7 @@
    fclose(filePtr);
  }
 
+
  int main(int argc, char* argv[])
  {
    // path, filename, ()> for overwrite, >> for append, new filename) -> optional
@@ -84,9 +85,8 @@
     }
     else if(strcmp(argv[i], "-e") == 0){
       printingEndline = 1;
-      numOfFlags++;
+      numOfFlags++;}
       //printf("numOfFlags%d\n", numOfFlags);
-    }
     else break;
    }
    //if(strcmp(argv[argc-2], ">>")) append = 1;

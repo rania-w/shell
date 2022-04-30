@@ -172,7 +172,7 @@ int main(int argc, char **argv)
         for (size_t i = 0; i < bubble_width1; i++)
             printf("_");
         printf(" \n");
-        PrintMessage(myArgc - 1, stringArray+1, bubble_width1 - 1); //ovdje nesta ne radi
+        PrintMessage(myArgc - 1, stringArray+1, bubble_width1 - 1); //ovdje nesta ne radi    bgm brat moj radi
         printf(" -");
         for (size_t i = 0; i < bubble_width1; i++)
             printf("-");

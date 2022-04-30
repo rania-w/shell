@@ -1,8 +1,29 @@
 Midterminal - shell project
 
+Made by: Dženis Kajević & Rania Weiss
 
+List of files:
+.gitignore
+followingTutorial.c
+forkexamples
+forkexamples.c
+halp
+halp.c
+kitten
+kitten.c
+midterminal
+midterminal.c
+trash
+trash.c
+unisay
+unisay.c
 
-Dženis Kajević & Rania Weiss
+Instructions for compiling and running:
+everything is compiled
+compile the shell by calling: gcc -o midterminal midterminal.c -lreadline
+start the midterminal by calling ./midterminal (you will be properly guided from there)
+
+WARNING: midterminal will not be shut down with Ctrl+C ;)
 
 Task 1.5
 
@@ -14,7 +35,12 @@ switches? Explain.
 Context switching is a method of switching from one process to another. It is helpful in sharing the CPU resources across all processes. This ensures that one process does not hog all the CPU's resources, and also that the CPU stays constantly busy as to not waste time either. When the switch occurs, the state of the first process is saved so that when it is resumed it resumes its execution properly.
 There is no rule for how many context switches should occur given any parametrs. On one hand, the context switches improve response time by assuring that no time is wasted for a single process to execute completely, and on the other hand context switching itself requires time as well. It is important to determine a proper length of a time slice so that context switches do not take more time than it would to run the processes without interrupts. If the time slice is large enough, fewer context switches take place, and therefore less time is needed for context switches. However, larger time slices to suggest that one process will be hogging the CPU. Therefore it is important to find balance when deciding the length of the time slices.
 
+
+Challenges and struggles:
 The biggest challenge for this project was not being as familiar as we were hoping we were with the C programming language. Many of the things we learned during our Programming II course was not quite enough to grasp the complexity and possibilities of the language.
+Not being familiar with Unix calls was troubling, piping was a bit complex as well.
+
+
 
 SOURCES:
 Shell analysis(1): https://www.geeksforgeeks.org/making-linux-shell-c/
@@ -39,3 +65,4 @@ strcspn(2): https://www.tutorialspoint.com/c_standard_library/c_function_strcspn
 open() and creat(): https://man7.org/linux/man-pages/man2/open.2.html
 analysis of multiple cat() implementations: https://gist.github.com/pete/665971
 handling signals: https://stackoverflow.com/questions/53657516/creating-my-own-shell-handling-ctrl-z-and-then-sending-sigcont-closes-the-proce
+etc...

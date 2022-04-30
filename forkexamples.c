@@ -79,22 +79,22 @@ int main(int argc, char **argv)
     if (argc != 2)
     {
         printf("Invalid number of arguments passed\n");
+        puts("call './forkexamples bomb' for forkbomb");
+        puts("call './forkexamples kill' to see example with kill()");
+        puts("call './forkexamples fork' for examples with fork()");
     }
     else if (strcmp(argv[1], "fork") == 0)
     {
-        // printf("%s", argv[1]);
         printf("\n\ncalling forkExample!!!!\n\n");
         forkExample();
     }
     else if (strcmp(argv[1], "bomb") == 0)
     {
-        // printf("%s", argv[1]);
         printf("\n\ncalling forkbombExample!!!!\n\n");
         forkbombExample();
     }
     else if (strcmp(argv[1], "kill") == 0)
     {
-        // printf("%s", argv[1]);
         printf("\n\ncalling killExample!!!!\n\n");
         killExample();
     }
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
         puts("Not a valid option");
         puts("call './forkexamples bomb' for forkbomb");
         puts("call './forkexamples kill' to see example with kill()");
-        puts("call './forkexamples forkExample' for examples with fork()");
+        puts("call './forkexamples fork' for examples with fork()");
     }
     return 0;
 }

@@ -26,6 +26,8 @@ char *output_redirection_file;
 int output_redirection = 0;
 int output_redirection_concat = 0;
 
+// COMPILE WITH gcc -Wall -o main main.c -lreadline
+
 void clear_variables()
 {
   fd = 0;
@@ -36,8 +38,6 @@ void clear_variables()
   output_redirection = 0;
   output_redirection_concat = 0;
 }
-
-// COMPILE WITH gcc -Wall -o main main.c -lreadline
 
 char *printDir()
 {
@@ -68,7 +68,7 @@ char *printMachineAndUser()
   return returnValue;
 }
 
-void splitCommandOnSpace(char *com_exec) // pretvori prvu komandu u array
+void splitCommandOnSpace(char *com_exec) // turns first command into array
 {
   int m = 1;
   args[0] = com_exec;
@@ -83,41 +83,49 @@ char *skipSpace(char *character)
     ++character;
   return character;
 }
+/**
+ * creates new file if it does not exist 
+ * 
+ * @param oneCommand 
+ */
 void output_redirect_newFile(char *oneCommand)
 {
-  char *o_token[100]; // all parts before >
+  char *outputToken[100]; // all parts before >
   char *copiedCommand;
   copiedCommand = strdup(oneCommand);
   int m = 1;
-  o_token[0] = strtok(copiedCommand, ">"); // splita komandu citavu na 2 dijela, token[0] je komanda, token[1] je output file
-  while ((o_token[m] = strtok(NULL, ">")) != NULL)
+  outputToken[0] = strtok(copiedCommand, ">"); // splits command into 2 parts, token[0] is the command, token[1] is the output file
+  while ((outputToken[m] = strtok(NULL, ">")) != NULL)
     m++;
-  o_token[1] = skipSpace(o_token[1]); // > *space* naziv_fajla (izbaci space)
-  output_redirection_file = strdup(o_token[1]);
-  // free(copiedCommand);
-  // free(oneCommand);
-  splitCommandOnSpace(o_token[0]);
+  outputToken[1] = skipSpace(outputToken[1]); // > *space* filename (removes space)
+  output_redirection_file = strdup(outputToken[1]);
+
+  splitCommandOnSpace(outputToken[0]);
 }
+/**
+ * concatenates to file if it exists
+ * 
+ * @param oneCommand 
+ */
 
 void output_redirect_concat(char *oneCommand)
 {
-  char *o_token[100]; // all parts before >
+  char *outputToken[100]; // all parts before >
   char *copiedCommand;
   copiedCommand = strdup(oneCommand);
   int m = 1;
-  o_token[0] = strtok(copiedCommand, ">>"); // splita komandu citavu na 2 dijela, token[0] je komanda, token[1] je output file
-  while ((o_token[m] = strtok(NULL, ">>")) != NULL)
+  outputToken[0] = strtok(copiedCommand, ">>"); // splits command into 2 parts, token[0] is the command, token[1] is the output file
+  while ((outputToken[m] = strtok(NULL, ">>")) != NULL)
     m++;
-  o_token[1] = skipSpace(o_token[1]); // > *space* naziv_fajla (izbaci space)
-  output_redirection_file = strdup(o_token[1]);
-  // free(copiedCommand);
-  // free(oneCommand);
-  splitCommandOnSpace(o_token[0]);
+  outputToken[1] = skipSpace(outputToken[1]); // > *space* filename (removes space)
+  output_redirection_file = strdup(outputToken[1]);
+
+  splitCommandOnSpace(outputToken[0]);
 }
 
 static int command(int input, int first, int last, char *stringForCheckingRedirect)
 {
-  int mypipefd[2], output_fd;
+  int mypipefd[2], output_fd; //creating file descriptors for interprocess communication
   if (pipe(mypipefd))
   {
     perror("pipe failed");
@@ -148,7 +156,7 @@ static int command(int input, int first, int last, char *stringForCheckingRedire
     }
 
     if (strstr(stringForCheckingRedirect, ">>"))
-    { // is ">>" is a substring of stringForCheckingRedirect...
+    { //checks if ">>" is a substring of stringForCheckingRedirect...
       output_redirection_concat = 1;
       output_redirect_concat(stringForCheckingRedirect);
     }
@@ -161,12 +169,11 @@ static int command(int input, int first, int last, char *stringForCheckingRedire
     {
       output_fd = open(output_redirection_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
       // https://stackoverflow.com/questions/18415904/what-does-mode-t-0644-mean
-      // creat(output_redirection_file, 0644);
-      // make a redirection for appending (O_TRUNC probably problem)
+      // open() is the same as creat(output_redirection_file, 0644);
       if (output_fd < 0)
       {
         fprintf(stderr, "Failed to open %s for writing\n", output_redirection_file);
-        // free(output_redirection_file);
+        
         return (EXIT_FAILURE);
       }
       dup2(output_fd, 1);
@@ -176,9 +183,6 @@ static int command(int input, int first, int last, char *stringForCheckingRedire
     else if (output_redirection == 1)
     {
       output_fd = open(output_redirection_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-      // https://stackoverflow.com/questions/18415904/what-does-mode-t-0644-mean
-      // creat(output_redirection_file, 0644);
-      // make a redirection for appending (O_TRUNC probably problem)
       if (output_fd < 0)
       {
         fprintf(stderr, "Failed to open %s for writing\n", output_redirection_file);
@@ -199,7 +203,7 @@ static int command(int input, int first, int last, char *stringForCheckingRedire
   else
   {
     // parent
-    waitpid(pid, 0, 0);
+    waitpid(pid, 0, 0); //disregarding what child returns
   }
 
   if (last == 1)
@@ -208,7 +212,6 @@ static int command(int input, int first, int last, char *stringForCheckingRedire
     close(input);
   close(mypipefd[1]);
   free(stringForCheckingRedirect); // freeing strdup() malloced space
-  // free(output_redirection_file); //since it's causing memory leaks (and it's annoying)
   return mypipefd[0];
 }
 
@@ -247,7 +250,6 @@ static int split(char *cmd_exec, int input, int first, int last)
     }
   }
   int fdReturn = command(input, first, last, stringForCheckingRedirect);
-  // free(stringForCheckingRedirect);
   return fdReturn;
 }
 
@@ -279,6 +281,8 @@ void handle_sigint(int sig)
 }
 
 /*
+
+signal handler for ctr+z -> not used
 void handle_sigtstp(int sig){
   //printf("Stop not allowed\n");
   fflush(stdout);
@@ -305,7 +309,7 @@ int main()
 
   char *commandInput;
   system("clear");
-  puts("Dženis and Rania made a shell\ngl hf");
+  puts("Dženis and Rania made a shell\n");
   puts("call './halp' to see manual");
   while (1)
   {
@@ -313,7 +317,6 @@ int main()
     fflush(stdin);
     fflush(stdout);
     char *machineAndUser = printMachineAndUser();
-    // commandInput = readline(printMachineAndUser());
     commandInput = readline(machineAndUser);
     free(machineAndUser);
 
@@ -324,7 +327,6 @@ int main()
       system("ls --color=always");
     else if (!strcmp(commandInput, "clear"))
       system("clear");
-    // else if(!strcmp(commandInput, "cat")) system("cat");
     else if (!strcmp(commandInput, "exit"))
     {
       free(commandInput);

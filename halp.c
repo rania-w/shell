@@ -6,8 +6,8 @@ int main(int argc, char **argv)
 {
     if (argc == 1)
     {
-        puts("call './forkexamples bomb' for forkbomb\ncall './forkexamples kill' to see example with kill()\ncall './forkexamples forkExample' for examples with fork()");
-        puts("call './nasRm [filename]' for implementation of remove");
+        puts("call './forkexamples bomb' for forkbomb\ncall './forkexamples kill' to see example with kill()\ncall './forkexamples fork' for examples with fork()");
+        puts("call './trash [filename]' for implementation of remove");
         puts("call './kitten [filename]' for implementation of cat");
         puts("call 'cd' and 'ls' regularly\n");
         puts("call './halp' to see this message again\ncall './halp [command]' to see the proper use of the command");
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     {
         puts("call './forkexamples bomb' for forkbomb");
         puts("call './forkexamples kill' to see example with kill()");
-        puts("call './forkexamples forkExample' for examples with fork()");
+        puts("call './forkexamples fork' for examples with fork()");
     }
     return 0;
 }

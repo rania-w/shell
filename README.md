@@ -4,7 +4,7 @@ Made by: Dženis Kajević & Rania Weiss
 
 List of files:
 .gitignore
-followingTutorial.c
+followingTutorial.c -> this file was used to test a lot of things, and we kept it so that you can get a glimpse of our thought process
 forkexamples
 forkexamples.c
 halp
@@ -40,7 +40,9 @@ Challenges and struggles:
 The biggest challenge for this project was not being as familiar as we were hoping we were with the C programming language. Many of the things we learned during our Programming II course was not quite enough to grasp the complexity and possibilities of the language.
 Not being familiar with Unix calls was troubling, piping was a bit complex as well.
 
-
+It was a lovely april day, snow had finally stopped falling, it seemed like spring might not be so far... And then we saw it. We saw it on LMS. We thought: "How difficult could this possibly be?" We were in for a treat.
+We first had to do a lot of research, because this was very new for us. Then we figured we need to start doing something. So we started with simple implementations like clear, cd, ls, rm, and an infinite loop for the terminal. The terminal was functioning and had color in it. The terminal was upgraded to show command history and provide autocompletion. We spent too much time picking ASCII art but we hope you think the unicorn is pretty. Then, poor Dženis watched 10h worth of materials (listed in sources) regarding Unix calls, pipes, etc. Rania was creating examples regarding system calls. Dženis implemented piping and redirecting during exams, and made Rania very worried for his general well-being. Then, we implented cat and then Dženis fixed some memory leaks (and Rania doesn't know why he looked for them but she's glad he did). Rania added help and then optimized it. Finally, we added an easter egg, have fun finding it ;)
+P.S. looking in the code is cheating for finding the easter egg.
 
 SOURCES:
 Shell analysis(1): https://www.geeksforgeeks.org/making-linux-shell-c/
@@ -64,5 +66,8 @@ strcspn(1): https://stackoverflow.com/questions/2693776/removing-trailing-newlin
 strcspn(2): https://www.tutorialspoint.com/c_standard_library/c_function_strcspn.htm
 open() and creat(): https://man7.org/linux/man-pages/man2/open.2.html
 analysis of multiple cat() implementations: https://gist.github.com/pete/665971
+more cat: https://linuxize.com/post/linux-cat-command/
 handling signals: https://stackoverflow.com/questions/53657516/creating-my-own-shell-handling-ctrl-z-and-then-sending-sigcont-closes-the-proce
+mode bit flags for files: https://stackoverflow.com/questions/18415904/what-does-mode-t-0644-mean
+
 etc...

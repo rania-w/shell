@@ -46,21 +46,18 @@ static void PrintPaddedBreak(size_t pad)
 // Prints the message
 static void PrintMessage(int argCount, char **argVector, size_t longest)
 {
-    size_t cur_line_len = 0;/*
-    for (int i  = 0; i < argc; i++){
-      printf("%s", argv[i]);
-    }*/
+    size_t cur_line_len = 0;
     for (int i = 0; i < argCount; i++)
     {
-        //printf("argCount = %d ", argCount);
+
         size_t word_len = strlen(argVector[i]) + 1;
-        //printf("word_len= %ld ", word_len);
+
         if (cur_line_len == 0)
             printf("| ");
         // If it all fits in the line, then print the word.
         if (cur_line_len + word_len <= MAX_WIDTH)
         {
-            //printf("62 line");
+
             printf("%s ", argVector[i]);
             if (cur_line_len + word_len == MAX_WIDTH)
             {
@@ -76,7 +73,7 @@ static void PrintMessage(int argCount, char **argVector, size_t longest)
         // Create a line break if the current line is nonempty.
         if (cur_line_len > 0)
         {
-          //printf("77 line");
+
             PrintPaddedBreak(longest - cur_line_len);
             printf("| ");
         }
@@ -84,7 +81,7 @@ static void PrintMessage(int argCount, char **argVector, size_t longest)
         // Otherwise, we print the current word.
         if (word_len > MAX_WIDTH)
         {
-            //printf("84 line");
+
             char *str = argVector[i];
             size_t processed = 0;
             for (size_t j = 0; j <= word_len / MAX_WIDTH; j++)
@@ -94,16 +91,18 @@ static void PrintMessage(int argCount, char **argVector, size_t longest)
                 PrintPaddedBreak(longest - len);
                 str += len;
                 processed += len;
-                if (processed >= word_len - 1){
-                    //printf("processed %ld > word_len %ld ", processed, len);
-                    break;}
+                if (processed >= word_len - 1)
+                {
+
+                    break;
+                }
                 printf("| ");
             }
             cur_line_len = 0;
         }
         else
         {
-            //printf("103 line");
+
             printf("%s ", argVector[i]);
             cur_line_len = word_len;
             if (word_len == MAX_WIDTH || i == argCount - 1)
@@ -113,71 +112,116 @@ static void PrintMessage(int argCount, char **argVector, size_t longest)
         }
     }
 }
-int splitStringIntoArray(char* inputString, char** arrayOfStrings){
-  int m = 2;
-  //printf("printam nesta");
-  //puts(inputString);
-  arrayOfStrings[0]="placeholder";
-  arrayOfStrings[1]=strtok(inputString," ");
-  //printf("%s", arrayOfStrings[1]);
-  //printf("printam nesta%s", arrayOfStrings[0]);
-  while((arrayOfStrings[m]=strtok(NULL," "))!=NULL){ m++;
-    //printf("%s\n", arrayOfStrings[m]);
-    //printf("m = %d", m);
-  }
-  //printf("%s\n", arrayOfStrings[2]);
-  //printf("m = %d", m);
-  return m;
+int splitStringIntoArray(char *inputString, char **arrayOfStrings)
+{
+    int m = 2;
+    arrayOfStrings[0] = "placeholder";
+    arrayOfStrings[1] = strtok(inputString, " ");
+    while ((arrayOfStrings[m] = strtok(NULL, " ")) != NULL)
+    {
+        m++;
+    }
+
+    return m;
 }
-void printUnicorn(){
-  printf("                              ,,))))))));,\n");
-  printf("                           __)))))))))))))), \n");
-  printf("             \\|/            -((((((''''((((((((. \n");
-  printf("              ---*-==//////((''  .     `)))))), \n");
-  printf("             /|\\         ))| o    ;-.    '(((((                                  ,(, \n");
-  printf("                         ( `|    /  )    ;))))'                               ,_))^;(~ \n");
-  printf("                            |   |   |   ,))((((_     _____------~~~-.        %%,;(;(>';'~ \n");
-  printf("                            o_);   ;    )))(((` ~---~  `::           \\      %%~~)(v;(`('~ \n");
-  printf("                                  ;    ''''````         `:       `:::|\\,__,%%    );`'; ~ \n");
-  printf("                                 |   _                )     /      `:|`----'     `-' \n");
-  printf("                           ______/ /~    |                 /        / \n");
-  printf("                         /~;;.____/;;'  /          ___--,-(   `;;;/ \n");
-  printf("                        / //  _;______;'------~~~~~    /;;/\\    / \n");
-  printf("                       //  | |                        / ;   \\;;,\\ \n");
-  printf("                      (<_  | ;                      /',/-----'  _> \n");
-  printf("                        _| ||_                     //~;~~~~~~~~~ \n");
-  printf("                           `_|                   (,~~ \n");
-  printf("                                                   |~| \n");
-  printf("                                                    ~~ \n");
+void printUnicorn()
+{
+    printf("                              ,,))))))));,\n");
+    printf("                           __)))))))))))))), \n");
+    printf("             \\|/            -((((((''''((((((((. \n");
+    printf("              ---*-==//////((''  .     `)))))), \n");
+    printf("             /|\\         ))| o    ;-.    '(((((                                  ,(, \n");
+    printf("                         ( `|    /  )    ;))))'                               ,_))^;(~ \n");
+    printf("                            |   |   |   ,))((((_     _____------~~~-.        %%,;(;(>';'~ \n");
+    printf("                            o_);   ;    )))(((` ~---~  `::           \\      %%~~)(v;(`('~ \n");
+    printf("                                  ;    ''''````         `:       `:::|\\,__,%%    );`'; ~ \n");
+    printf("                                 |   _                )     /      `:|`----'     `-' \n");
+    printf("                           ______/ /~    |                 /        / \n");
+    printf("                         /~;;.____/;;'  /          ___--,-(   `;;;/ \n");
+    printf("                        / //  _;______;'------~~~~~    /;;/\\    / \n");
+    printf("                       //  | |                        / ;   \\;;,\\ \n");
+    printf("                      (<_  | ;                      /',/-----'  _> \n");
+    printf("                        _| ||_                     //~;~~~~~~~~~ \n");
+    printf("                           `_|                   (,~~ \n");
+    printf("                                                   |~| \n");
+    printf("                                                    ~~ \n");
+}
+void printReaper()
+{
+    printf("                                         ."
+           "--..__\n");
+    printf("                     _                     []       ``-.._\n");
+    printf("                  .'` `'.                  ||__           `-._\n");
+    printf("                 /    ,-.\\                 ||_ ```---..__     `-.\n");
+    printf("                /    /:::\\\\               /|//}          ``--._  `.\n");
+    printf("                |    |:::||              |////}                `-. \\\n");
+    printf("                |    |:::||             //'///                    `.\\\n");
+    printf("                |    |:::||            //  ||'                      `|\n");
+    printf("                /    |:::|/        _,-//\\  ||\n");
+    printf("               /`    |:::|`-,__,-'`  |/  \\ ||\n");
+    printf("             /`  |   |'' ||           \\   |||\n");
+    printf("           /`    \\   |   ||            |  /||\n");
+    printf("         |`       |  |   |)            \\ | ||\n");
+    printf("        |          \\ |   /      ,.__    \\| ||\n");
+    printf("        /           `         /`    `\\   | ||\n");
+    printf("       |                     /        \\  / ||\n");
+    printf("       |                     |        | /  ||\n");
+    printf("       /         /           |        `(   ||\n");
+    printf("      /          .           /          )  ||\n");
+    printf("     |            \\          |     ________||\n");
+    printf("    /             |          /     `-------.|\n");
+    printf("   |\\            /          |              ||\n");
+    printf("   \\/`-._       |           /              ||\n");
+    printf("    //   `.    /`           |              ||\n");
+    printf("   //`.    `. |             \\              ||\n");
+    printf("  ///\\ `-._  )/             |              ||\n");
+    printf(" //// )   .(/               |              ||\n");
+    printf(" ||||   ,'` )               /              ||\n");
+    printf(" ||||  /                    /              ||\n");
+    printf(" `\\\\` /`                    |              || \n");
+    printf("     |`                     \\              || \n");
+    printf("    /                        |             ||\n");
+    printf("  /`                          \\            ||\n");
+    printf("/`                            |            ||\n");
+    printf("`-.___,-.      .-.        ___,'            ||\n");
+    printf("         `---'`   `'----'`\n");
 }
 int main(int argc, char **argv)
 {
+    int deathIsImminent = 0;
     if (argc == 1)
     {
-        //printf("%d\n", argc);
-        char* inputString = malloc(10000 * sizeof(char));
-        //gets(inputString, 10000, stdin);
-        fgets(inputString, 10000, stdin);
-        inputString[strcspn(inputString, "\n")] = 0; //remove trailing \n
-        //fputs(inputString, stdout);
-        //printf("%d\n",argc);
-        //puts(inputString);
-        char** stringArray = malloc(100 * sizeof(inputString));
-        int myArgc = splitStringIntoArray(inputString, stringArray);
-        //printf("myArgc = %d ", myArgc);
-        //printf("%d\n",argc);
 
-        size_t bubble_width1 = LongestLineLength(myArgc -1, stringArray +1) + 1;
+        char *inputString = malloc(10000 * sizeof(char));
+
+        fgets(inputString, 10000, stdin);
+        if (strstr(inputString, "death"))
+        {
+            deathIsImminent = 1;
+        }
+        inputString[strcspn(inputString, "\n")] = 0; // remove trailing \n
+
+        char **stringArray = malloc(100 * sizeof(inputString));
+        int myArgc = splitStringIntoArray(inputString, stringArray);
+
+        size_t bubble_width1 = LongestLineLength(myArgc - 1, stringArray + 1) + 1;
         printf(" _");
         for (size_t i = 0; i < bubble_width1; i++)
             printf("_");
         printf(" \n");
-        PrintMessage(myArgc - 1, stringArray+1, bubble_width1 - 1); //ovdje nesta ne radi    bgm brat moj radi
+        PrintMessage(myArgc - 1, stringArray + 1, bubble_width1 - 1); // ovdje nesta ne radi    bgm brat moj radi
         printf(" -");
         for (size_t i = 0; i < bubble_width1; i++)
             printf("-");
         printf(" \n");
-        printUnicorn();
+        if (deathIsImminent == 0)
+        {
+            printUnicorn();
+        }
+        else
+        {
+            printReaper();
+        }
 
         free(inputString);
         free(stringArray);
@@ -194,6 +238,20 @@ int main(int argc, char **argv)
     for (size_t i = 0; i < bubble_width; i++)
         printf("-");
     printf(" \n");
-    printUnicorn();
+    for (size_t i = 1; i < argc; i++)
+    {
+        if (strstr(argv[i], "death"))
+        {
+            deathIsImminent = 1;
+            break;
+        }
+    }
+
+    if (deathIsImminent == 0)
+    {
+        printUnicorn();
+    }
+    else
+        printReaper();
     return 0;
 }

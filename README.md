@@ -1,6 +1,4 @@
-# shell - needs a cool name
-
-
+Midterminal - shell project
 
 Dženis Kajević & Rania Weiss
 

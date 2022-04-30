@@ -33,7 +33,7 @@ void clear_variables()
     flag=0;
     pipe_count=0;
     pid=0;
-    free(output_redirection_file);
+    //free(output_redirection_file);
     output_redirection = 0;
     output_redirection_concat = 0;
 }
@@ -75,6 +75,7 @@ char* printMachineAndUser(){
 void splitCommandOnSpace(char *com_exec) //pretvori prvu komandu u array
 {
   int m=1;
+  args[0] = com_exec;
   args[0]=strtok(com_exec," ");
   while((args[m]=strtok(NULL," "))!=NULL) m++;
 }
@@ -94,8 +95,8 @@ void output_redirect_newFile(char* oneCommand)
   while((o_token[m]=strtok(NULL,">"))!=NULL) m++;
   o_token[1]=skipSpace(o_token[1]); // > *space* naziv_fajla (izbaci space)
   output_redirection_file=strdup(o_token[1]);
-  free(copiedCommand);
-  free(oneCommand);
+  //free(copiedCommand);
+  //free(oneCommand);
   splitCommandOnSpace(o_token[0]);
 }
 
@@ -108,8 +109,8 @@ void output_redirect_concat(char* oneCommand){
   while((o_token[m]=strtok(NULL,">>"))!=NULL) m++;
   o_token[1]=skipSpace(o_token[1]); // > *space* naziv_fajla (izbaci space)
   output_redirection_file=strdup(o_token[1]);
-  free(copiedCommand);
-  free(oneCommand);
+  //free(copiedCommand);
+  //free(oneCommand);
   splitCommandOnSpace(o_token[0]);
 }
 
@@ -161,7 +162,7 @@ static int command(int input, int first, int last, char* stringForCheckingRedire
         if (output_fd < 0)
             {
                 fprintf(stderr, "Failed to open %s for writing\n", output_redirection_file);
-                free(output_redirection_file);
+                //free(output_redirection_file);
                 return(EXIT_FAILURE);
             }
         dup2(output_fd, 1);

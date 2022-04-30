@@ -127,6 +127,7 @@ static int command(int input, int first, int last, char* stringForCheckingRedire
       return 2;
   }
   if (pid == 0)
+  //child
   {
     if (first==1 && last==0 && input==0)
     {
@@ -189,6 +190,7 @@ static int command(int input, int first, int last, char* stringForCheckingRedire
   }
   else
   {
+    //parent
      waitpid(pid, 0, 0);
   }
 
@@ -196,7 +198,7 @@ static int command(int input, int first, int last, char* stringForCheckingRedire
   if (input != 0) close(input);
   close(mypipefd[1]);
   free(stringForCheckingRedirect); //freeing strdup() malloced space
-  free(output_redirection_file); //since it's causing memory leaks (and it's annoying)
+  //free(output_redirection_file); //since it's causing memory leaks (and it's annoying)
   return mypipefd[0];
 }
 

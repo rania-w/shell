@@ -1,5 +1,7 @@
 Midterminal - shell project
 
+Task 5
+
 Made by: Dženis Kajević & Rania Weiss
 
 List of files:

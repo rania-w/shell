@@ -256,9 +256,36 @@ void with_pipe_execute(char* commandInput)
     split(cmd_exec[i], input, first, 1);
 }
 
+  //handling signals
+  void handle_sigint(int sig){
+    fflush(stdout);
+  }
 
-
+  /*
+  void handle_sigtstp(int sig){
+    //printf("Stop not allowed\n");
+    fflush(stdout);
+  }
+  */
 int main(){
+
+    // this first part is for handling CTRL+C signals, making it so that once CTRL+C is clicked, the execv child processes will get terminated
+    // while the terminal will stay alive
+    struct sigaction sa;  //predefined struct (probably from signal.h)
+    sa.sa_handler = &handle_sigint; //pointer to function
+    sa.sa_flags = SA_RESTART; //this fixes issues if we're using scanf and sending SIGTSTP at the same time
+    sigaction(SIGINT, &sa, NULL); //binds the signal to the handler, the 3rd param could be an old sigaction handler (optional)
+    //signal(SIGTSTP, &handle_sigtstp); // this does exactly the same thing as the above part, but it's an unsafe function for portability reasons (AVOID ITS USE)
+
+
+    // this second part is for handling CTRL+Z signals, but since all child processes are in the same group (foreground), this would
+    // prevent us from stopping the terminal in case something goes wrong...
+
+    //struct sigaction sa2;
+    //sa2.sa_handler = &handle_sigtstp;
+    //sa2.sa_flags = SA_RESTART;
+    //sigaction(SIGTSTP, &sa2, NULL);
+
     char* commandInput;
     while(1){
         clear_variables();
@@ -271,7 +298,7 @@ int main(){
 
         //call single-word commands
         if(strlen(commandInput)>0) add_history(commandInput);
-        if (!strcmp(commandInput, "ls")) system("ls");
+        if (!strcmp(commandInput, "ls")) system("ls --color=always");
         else if(!strcmp(commandInput, "clear")) system("clear");
 				//else if(!strcmp(commandInput, "cat")) system("cat");
         else if (!strcmp(commandInput, "exit")){ free(commandInput); break; }

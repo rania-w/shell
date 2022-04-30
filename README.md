@@ -21,6 +21,7 @@ Shell analysis(1): https://www.geeksforgeeks.org/making-linux-shell-c/
 Shell analysis(2): https://github.com/kalpishs/Unix-Shell-Implementation-in-C
 Shell analysis(3): https://github.com/TunsAdrian/Linux-Terminal
 Shell analysis(4): https://web.stonehill.edu/compsci/CS314/Assignments/Assignment2.pdf
+Shell analysis(5): https://inst.eecs.berkeley.edu/~cs162/su20/static/hw/hw2.pdf
 (l)readline: https://eli.thegreenplace.net/2016/basics-of-using-the-readline-library/
 Unicorn ASCII: https://www.asciiart.eu/mythology/unicorns
 Cowsay analysis: https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/examples/cowsay/cowsay.c
@@ -37,4 +38,4 @@ strcspn(1): https://stackoverflow.com/questions/2693776/removing-trailing-newlin
 strcspn(2): https://www.tutorialspoint.com/c_standard_library/c_function_strcspn.htm
 open() and creat(): https://man7.org/linux/man-pages/man2/open.2.html
 analysis of multiple cat() implementations: https://gist.github.com/pete/665971
-
+handling signals: https://stackoverflow.com/questions/53657516/creating-my-own-shell-handling-ctrl-z-and-then-sending-sigcont-closes-the-proce
